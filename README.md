@@ -15,7 +15,6 @@ user@system$ ./console.py
 (hbnb) help  
 
 Documented commands (type help \<topic\>):  
-========================================  
 EOF  help  quit  
 (hbnb)   
 (hbnb)   
