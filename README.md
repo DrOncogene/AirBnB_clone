@@ -8,17 +8,17 @@ The project consist of the following parts:
 5. Creating a **RESTful** API using flask for manipulating objects from the frontend.  
 6. Making the website dynamic by using **JS** and load objects using the REST API.  
 
-#### The console
+### The console
 The console is written in python using the [cmd](https://docs.python.org/3/library/cmd.html) module. It operates in interactive and non-interactive modes.  
-###### Usage
+##### Usage
 user@system$ ./console.py  
 (hbnb) help  
 
-Documented commands (type help <topic>):  
+Documented commands (type help \<topic\>):  
 ========================================  
 EOF  help  quit  
 (hbnb)   
 (hbnb)   
 (hbnb) quit  
-$  
 
+$  
