@@ -4,6 +4,7 @@ that saves objects to a file"""
 
 import json
 from os import path as os_path
+from models.user import User
 
 
 class FileStorage:
