@@ -21,3 +21,7 @@ EOF  help  quit
 (hbnb) quit  
 
 $  
+
+### Authors
+- [Nasir Abdulrasheed](https://github.com/DrOncogene/) | <mypythtesting@gmail.com>
+- [Charles S. Homsuk](https://github.com/Charles-Homks/) | <charles01homks@gmail.com>
