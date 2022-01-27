@@ -3,7 +3,6 @@
 line interpreter for the Airbnb console"""
 import cmd
 import readline
-import re
 import sys
 from models import storage
 from models.base_model import BaseModel
@@ -12,64 +11,147 @@ from models.base_model import BaseModel
 class HBNBCommand(cmd.Cmd):
     """class the defines the console object"""
     prompt = "(hbnb) "
-    __classes = {"BaseModel": BaseModel}
+    _classes = {
+        "BaseModel": BaseModel
+    }
 
-    def do_EOF(self, arg):
+    def do_EOF(self, arg: str) -> None:
         """Exits the interpreter. USAGE: EOF\n"""
         sys.exit(0)
 
-    def do_quit(self, arg):
+    def do_quit(self, arg: str) -> None:
         """Quit command to exit the program\n"""
         sys.exit(0)
-
-    def do_create(self, arg):
-        """creates a new instance of a class passed as argument.\
- USAGE: create <class_name>"""
-        if arg == "":
-            print("** class name missing **")
-        elif arg not in HBNBCommand.__classes:
-            print("** class doesn't exist **")
-        else:
-            new_obj = HBNBCommand.__classes[arg]()
-            storage.new(new_obj)
-            storage.save()
-            print(new_obj.id)
-
-    def do_show(self, arg):
-        args = parse_args(arg)
-        print(args)
-        for item in args:
-            print(item)
 
     def emptyline(self):
         return
 
-def parse_args(arg: str) -> list:
-    regex = re.compile(r'("*\w+\s*\w+"*)')
-    arg_list = regex.findall(arg)
-    i = 0
-    while i < len(arg):
-        curr_arg = ""
-        j = i + 1
-        while arg[j] not in ('"', " "):
-            i += 1
+    def do_create(self, arg: str) -> None:
+        """creates a new instance of a class passed as argument.\
+ USAGE: create <class_name>"""
+        args = parse_args(arg)
+        if validate_args(args, 1) == -1:
+            return
+        if args[0] in HBNBCommand._classes:
+            new_obj = HBNBCommand._classes[args[0]]()
+            storage.new(new_obj)
+            storage.save()
+            print(new_obj.id)
 
-    """i = 0
-    while i < len(arg):
-        idx = i + 1
-        if arg[i] == '"':
-            print(arg[i])
-            while idx < len(arg):
-                if arg[idx] == '"':
+    def do_show(self, arg: str) -> None:
+        """prints the str representation of an instance.\
+ USAGE: show <classname> <id>"""
+        args = parse_args(arg)
+        if validate_args(args, 2) == -1:
+            return
+        key = f"{args[0]}.{args[1]}"
+        all_obj = storage.all()
+        if key in all_obj:
+            obj_class = HBNBCommand._classes[args[0]]
+            obj = obj_class(**all_obj[key])
+            print(obj)
+        else:
+            print("** no instance found **")
+
+    def do_destroy(self, arg: str) -> None:
+        """deletes a given instance from storage.\
+ USAGE: destroy <classname> <id>"""
+        args = parse_args(arg)
+        if validate_args(args, 2) == -1:
+            return
+        key = f"{args[0]}.{args[1]}"
+        if key not in storage.all():
+            print("** no instance found **")
+            return
+        del storage.all()[key]
+        storage.save()
+
+    def do_all(self, arg: str) -> None:
+        """prints all instances. USAGE: all <classname> or all"""
+        args = parse_args(arg)
+        obj_list = []
+        if len(args) > 0:
+            if validate_args(args, 1) == -1:
+                return
+            for key, obj_dict in storage.all().items():
+                if args[0] in key:
+                    obj_list.append(str(BaseModel(**obj_dict)))
+            print(obj_list)
+            return
+        for key, obj_dict in storage.all().items():
+            obj_list.append(str(BaseModel(**obj_dict)))
+        print(obj_list)
+
+    def do_update(self, arg: str) -> None:
+        """update the given attribute of a given object.\
+ USAGE: update <class name> <id> <attr name> '<attr value>'"""
+        args = parse_args(arg)
+        if validate_args(args, 4) == -1:
+            return
+        key = f"{args[0]}.{args[1]}"
+        all_obj = storage.all()
+        if key not in all_obj:
+            print("** no instance found **")
+            return
+        if len(args) < 3:
+            print("** attribute name missing **")
+            return
+        if len(args) < 4:
+            print("** value missing **")
+            return
+        attr = args[2]
+        value = args[3]
+        obj_dict = all_obj[key]
+        obj = BaseModel(**obj_dict)
+        if attr in obj.__dict__:
+            attr_type = type(obj.__dict__[attr])
+            obj.__dict__[attr] = attr_type(value)
+        else:
+            obj.__dict__[attr] = value
+        all_obj[key] = obj.to_dict()
+        storage.save()
+
+
+def parse_args(arg: str) -> list:
+    if arg == "":
+        return []
+    args = arg.split(" ")
+    i = 0
+    while i < len(args):
+        curr = args[i]
+        found = 0
+        if curr[0] == '"':
+            if i == len(args) - 1:
+                args[i] = curr.replace('"', '')
+                break
+            for j in range(i + 1, len(args)):
+                next = args[j]
+                if next[len(next) - 1] == '"':
+                    found = 1
                     break
-                idx += 1
-            print(f"i: {i}, idx: {idx}")
-            if arg[idx] == '"':
-                arg_list.append(arg[i:idx + 1])
-        if idx - 1 != i:
-            i = idx
-        i += 1"""
-    return arg_list
+            full = curr
+            for k in range(i + 1, j + 1):
+                full += f" {args[k]}"
+            full = full.replace('"', '')
+            args.insert(i, full)
+            args_copy = args.copy()
+            for k in range(i + 1, j + 2):
+                args.pop(args.index(args_copy[k]))
+        i += 1
+    return args
+
+
+def validate_args(args: list, n_args: int) -> int:
+    if len(args) == 0:
+        print("** class name missing **")
+        return -1
+    if args[0] not in HBNBCommand._classes:
+        print("** class doesn't exist **")
+        return -1
+    if len(args) < 2 and n_args >= 2:
+        print("** instance id missing **")
+        return -1
+    return 0
 
 
 if __name__ == "__main__":
