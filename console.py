@@ -13,7 +13,11 @@ from models.user import User
 class HBNBCommand(cmd.Cmd):
     """class the defines the console object"""
     prompt = "(hbnb) "
-    __classes = {"BaseModel": BaseModel}
+    __classes = {
+            "BaseModel",
+            "User"
+            }
+
 
     def do_EOF(self, arg):
         """Exits the interpreter. USAGE: EOF\n"""
