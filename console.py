@@ -86,13 +86,16 @@ class HBNBCommand(cmd.Cmd):
         if len(args) > 0:
             if validate_args(args, 1) == -1:
                 return
+            obj_class = HBNBCommand._classes[args[0]]
             for key, obj_dict in storage.all().items():
                 if args[0] in key:
-                    obj_list.append(str(BaseModel(**obj_dict)))
+                    obj_list.append(str(obj_class(**obj_dict)))
             print(obj_list)
             return
         for key, obj_dict in storage.all().items():
-            obj_list.append(str(BaseModel(**obj_dict)))
+            class_name = obj_dict["__class__"]
+            obj_class = HBNBCommand._classes[class_name]
+            obj_list.append(str(obj_class(**obj_dict)))
         print(obj_list)
 
     def do_update(self, arg: str) -> None:
