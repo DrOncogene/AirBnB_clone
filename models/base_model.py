@@ -17,6 +17,8 @@ class BaseModel:
                 self.updated_at = datetime.fromisoformat(v)
             elif k == "id":
                 self.id = v
+            elif k != "__class__":
+                self.__dict__[k] = v
         if len(kwargs) == 0:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
