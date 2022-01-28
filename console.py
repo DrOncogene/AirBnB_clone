@@ -4,6 +4,8 @@ line interpreter for the Airbnb console"""
 import cmd
 import readline
 import sys
+import json
+import re
 from models import storage
 from models.base_model import BaseModel
 from models.user import User
@@ -39,17 +41,28 @@ class HBNBCommand(cmd.Cmd):
         return
 
     def default(self, arg: str) -> None:
-        args = parse_args(arg, delim=".")
-        if len(args) < 2:
+        pattern = re.compile(r'(\w+)\.(\w+)\(([A-Za-z0-9\-,{}:\'\" ]*)\)')
+        res = pattern.findall(arg)
+        if len(res) < 1 or len(res[0]) < 3:
             super().default(arg)
             return
-        class_name = args[0]
-        command = args[1]
-        if command == "all()":
-            self.onecmd(f"{command.replace('()', '')} {class_name}")
-        elif command == "count()":
+        class_name = res[0][0]
+        command = res[0][1]
+        args = res[0][2]
+        if command == "all":
+            self.onecmd(f"{command} {class_name}")
+            return
+        elif command == "count":
             count = self.do_all(f"{class_name}", count=True)
             print(count)
+            return
+        else:
+            if "{" in args:
+                self.dict_update(class_name, args)
+                return
+            self.onecmd(f"{command} {class_name} {args}")
+            return
+        super().default(arg)
 
     def do_create(self, arg: str) -> None:
         """creates a new instance of a class passed as argument.\
@@ -118,7 +131,8 @@ class HBNBCommand(cmd.Cmd):
         args = parse_args(arg)
         if validate_args(args, 4) == -1:
             return
-        key = f"{args[0]}.{args[1]}"
+        class_name, id = args[0], args[1].replace(",", "")
+        key = f"{class_name}.{id}"
         all_obj = storage.all()
         if key not in all_obj:
             print("** no instance found **")
@@ -129,17 +143,34 @@ class HBNBCommand(cmd.Cmd):
         if len(args) < 4:
             print("** value missing **")
             return
-        attr = args[2]
-        value = args[3]
+        attr, value = args[2].strip(","), args[3].strip(",")
         obj_dict = all_obj[key]
-        obj = BaseModel(**obj_dict)
+        obj_class = HBNBCommand._classes[class_name]
+        obj = obj_class(**obj_dict)
         if attr in obj.__dict__:
             attr_type = type(obj.__dict__[attr])
             obj.__dict__[attr] = attr_type(value)
         else:
             obj.__dict__[attr] = value
-        all_obj[key] = obj.to_dict()
+        storage.new(obj)
         storage.save()
+
+    def dict_update(self, class_name: str, arg: str) -> None:
+        pattern = re.compile(r'([\w\-]+),\s*(\{.*\})')
+        res = pattern.findall(arg)
+        if len(res) < 1:
+            self.onecmd(f"update {class_name} {arg}")
+            return
+        id = res[0][0]
+        obj_dict = res[0][1]
+        obj_dict = obj_dict.strip("{}").split(",")
+        for attr_str in obj_dict:
+            attr = attr_str.split(":")
+            name = attr[0].strip()
+            value = ""
+            if len(attr) > 1:
+                value = attr[1].strip()
+            self.onecmd(f"update {class_name} {id} {name} {value}")
 
 
 def parse_args(arg: str, delim=" ") -> list:
