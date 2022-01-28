@@ -4,7 +4,7 @@ identifiers for objects"""
 import uuid
 from models import storage
 from datetime import datetime
-
+from models import storage
 
 class BaseModel:
     """class to define the BaseModel, mainly to generate
