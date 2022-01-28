@@ -1,4 +1,5 @@
 # Welcome to the AirBnB clone project!
+![image](https://user-images.githubusercontent.com/88429426/151580771-5675fb20-ad52-46cd-bc55-9f9d937cdee9.png)
 
 ---
 
