@@ -27,7 +27,6 @@ class HBNBCommand(cmd.Cmd):
             "Review": Review,
     }
 
-
     def do_EOF(self, arg: str) -> None:
         """Exits the interpreter. USAGE: EOF\n"""
         sys.exit(0)
@@ -38,6 +37,19 @@ class HBNBCommand(cmd.Cmd):
 
     def emptyline(self):
         return
+
+    def default(self, arg: str) -> None:
+        args = parse_args(arg, delim=".")
+        if len(args) < 2:
+            super().default(arg)
+            return
+        class_name = args[0]
+        command = args[1]
+        if command == "all()":
+            self.onecmd(f"{command.replace('()', '')} {class_name}")
+        elif command == "count()":
+            count = self.do_all(f"{class_name}", count=True)
+            print(count)
 
     def do_create(self, arg: str) -> None:
         """creates a new instance of a class passed as argument.\
@@ -79,7 +91,7 @@ class HBNBCommand(cmd.Cmd):
         del storage.all()[key]
         storage.save()
 
-    def do_all(self, arg: str) -> None:
+    def do_all(self, arg: str, count=False):
         """prints all instances. USAGE: all <classname> or all"""
         args = parse_args(arg)
         obj_list = []
@@ -90,6 +102,8 @@ class HBNBCommand(cmd.Cmd):
             for key, obj_dict in storage.all().items():
                 if args[0] in key:
                     obj_list.append(str(obj_class(**obj_dict)))
+            if count:
+                return len(obj_list)
             print(obj_list)
             return
         for key, obj_dict in storage.all().items():
@@ -128,10 +142,10 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
 
-def parse_args(arg: str) -> list:
+def parse_args(arg: str, delim=" ") -> list:
     if arg == "":
         return []
-    args = arg.split(" ")
+    args = arg.split(delim)
     i = 0
     while i < len(args):
         curr = args[i]
