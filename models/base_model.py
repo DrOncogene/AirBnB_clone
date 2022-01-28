@@ -2,6 +2,7 @@
 """module that defines the base class for creating unique
 identifiers for objects"""
 import uuid
+from models import storage
 from datetime import datetime
 from models import storage
 
