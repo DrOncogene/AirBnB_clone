@@ -10,42 +10,16 @@ The project consist of the following parts:
 
 ### The console
 The console is written in python using the [cmd](https://docs.python.org/3/library/cmd.html) module. It operates in interactive and non-interactive modes.  
+##### Usage
+user@system$ ./console.py  
+Documented commands (type help \<topic\>):  
+EOF  help  quit  
+(hbnb)   
+(hbnb)   
+(hbnb) quit  
 
- **Interactive mode**
+$  
 
-   $ ./console.py
-   (hbnb) help
-
-   Documented commands (type help <topic>):
-   ========================================
-   EOF  help  quit
-
-   (hbnb) 
-   (hbnb) 
-   (hbnb) quit
-   $
-
-**Non-interactive mode**
-
-   $ echo "help" | ./console.py
-   (hbnb)
-
-   Documented commands (type help <topic>):
-   ========================================
-   EOF  help  quit
-   (hbnb) 
-   $
-   $ cat test_help
-   help
-   $
-   $ cat test_help | ./console.py
-   (hbnb)
-
-   Documented commands (type help <topic>):
-   ========================================
-   EOF  help  quit
-   (hbnb) 
-   $
 
 ### Authors
 - [Nasir Abdulrasheed](https://github.com/DrOncogene/) | <mypythtesting@gmail.com>
