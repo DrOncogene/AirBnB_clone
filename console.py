@@ -147,8 +147,8 @@ class HBNBCommand(cmd.Cmd):
         obj_dict = all_obj[key]
         obj_class = HBNBCommand._classes[class_name]
         obj = obj_class(**obj_dict)
-        if attr in obj.__dict__:
-            attr_type = type(obj.__dict__[attr])
+        if attr in dir(obj):
+            attr_type = type(getattr(obj, attr))
             obj.__dict__[attr] = attr_type(value)
         else:
             obj.__dict__[attr] = value
