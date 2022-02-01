@@ -126,7 +126,7 @@ class HBNBCommand(cmd.Cmd):
         args = parse_args(arg)
         if validate_args(args, 4) == -1:
             return
-        class_name, id = args[0], args[1].replace(",", "")
+        class_name, id = args[0], args[1]
         key = f"{class_name}.{id}"
         if key not in storage.all():
             print("** no instance found **")
@@ -137,7 +137,7 @@ class HBNBCommand(cmd.Cmd):
         if len(args) < 4:
             print("** value missing **")
             return
-        attr, value = args[2].strip(","), args[3].strip(",")
+        attr, value = args[2], args[3]
         obj = storage.all()[key]
         if attr in dir(obj):
             attr_type = type(getattr(obj, attr))
@@ -171,25 +171,27 @@ def parse_args(arg: str, delim=" ") -> list:
     args = arg.split(delim)
     i = 0
     while i < len(args):
-        curr = args[i]
+        curr = args[i].strip(",")
         found = 0
-        if curr[0] == '"':
+        if curr[0] == '"' and curr[-1] != '"':
             if i == len(args) - 1:
                 args[i] = curr.replace('"', '')
                 break
             for j in range(i + 1, len(args)):
                 next = args[j]
-                if next[len(next) - 1] == '"':
+                if next[-1] == '"':
                     found = 1
                     break
             full = curr
             for k in range(i + 1, j + 1):
                 full += f" {args[k]}"
-            full = full.replace('"', '')
+            full = full.strip('"')
             args.insert(i, full)
             args_copy = args.copy()
             for k in range(i + 1, j + 2):
                 args.pop(args.index(args_copy[k]))
+        else:
+            args[i] = curr.strip('"')
         i += 1
     return args
 
