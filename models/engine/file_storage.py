@@ -47,6 +47,8 @@ class FileStorage:
 
 
 def import_models():
+    """imports the modules locally when called
+    to avoid circular import"""
     from models.base_model import BaseModel
     from models.user import User
     from models.place import Place
