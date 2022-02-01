@@ -751,15 +751,6 @@ class TestUpdateCommand(unittest.TestCase):
     '''test the update command'''
 
     def setUp(self):
-        self.classes = {
-            "BaseModel": BaseModel,
-            "User": User,
-            "State": State,
-            "City": City,
-            "Place": Place,
-            "Amenity": Amenity,
-            "Review": Review,
-        }
         self.base = BaseModel()
         self.user = User()
         self.place = Place()
@@ -974,6 +965,104 @@ class TestUpdateCommand(unittest.TestCase):
         key = f"Place.{id}"
         self.place = Place(**storage.all()[key])
         self.assertEqual(self.place.latitude, 45.5)
+
+
+class TestCountCommand(unittest.TestCase):
+    '''test the .count() command'''
+
+    def setUp(self):
+        self.base = BaseModel()
+        self.user = User()
+        self.place = Place()
+        self.state = State()
+        self.city = City()
+        self.amenity = Amenity()
+        self.review = Review()
+
+        try:
+            os.rename("file.json", "tmp")
+        except IOError:
+            pass
+
+    def tearDown(self):
+        try:
+            os.remove("file.json")
+        except IOError:
+            pass
+        try:
+            os.rename("tmp", "file.json")
+        except IOError:
+            pass
+
+    def test_count_BaseModel(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.count()")
+        count = int(f.getvalue()[:-1])
+        expected = 0
+        for key in storage.all().keys():
+            if "BaseModel" in key:
+                expected += 1
+        self.assertEqual(count, expected)
+
+    def test_count_User(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("User.count()")
+        count = int(f.getvalue()[:-1])
+        expected = 0
+        for key in storage.all().keys():
+            if "User" in key:
+                expected += 1
+        self.assertEqual(count, expected)
+
+    def test_count_Place(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Place.count()")
+        count = int(f.getvalue()[:-1])
+        expected = 0
+        for key in storage.all().keys():
+            if "Place" in key:
+                expected += 1
+        self.assertEqual(count, expected)
+
+    def test_count_State(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("State.count()")
+        count = int(f.getvalue()[:-1])
+        expected = 0
+        for key in storage.all().keys():
+            if "State" in key:
+                expected += 1
+        self.assertEqual(count, expected)
+
+    def test_count_City(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("City.count()")
+        count = int(f.getvalue()[:-1])
+        expected = 0
+        for key in storage.all().keys():
+            if "City" in key:
+                expected += 1
+        self.assertEqual(count, expected)
+
+    def test_count_Amenity(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Amenity.count()")
+        count = int(f.getvalue()[:-1])
+        expected = 0
+        for key in storage.all().keys():
+            if "Amenity" in key:
+                expected += 1
+        self.assertEqual(count, expected)
+
+    def test_count_Review(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Review.count()")
+        count = int(f.getvalue()[:-1])
+        expected = 0
+        for key in storage.all().keys():
+            if "Review" in key:
+                expected += 1
+        self.assertEqual(count, expected)
 
 
 if __name__ == "__main__":
