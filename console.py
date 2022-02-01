@@ -83,10 +83,8 @@ class HBNBCommand(cmd.Cmd):
         if validate_args(args, 2) == -1:
             return
         key = f"{args[0]}.{args[1]}"
-        all_obj = storage.all()
-        if key in all_obj:
-            obj_class = HBNBCommand._classes[args[0]]
-            obj = obj_class(**all_obj[key])
+        if key in storage.all():
+            obj = storage.all()[key]
             print(obj)
         else:
             print("** no instance found **")
@@ -111,18 +109,15 @@ class HBNBCommand(cmd.Cmd):
         if len(args) > 0:
             if validate_args(args, 1) == -1:
                 return
-            obj_class = HBNBCommand._classes[args[0]]
-            for key, obj_dict in storage.all().items():
+            for key, obj in storage.all().items():
                 if args[0] in key:
-                    obj_list.append(str(obj_class(**obj_dict)))
+                    obj_list.append(str(obj))
             if count:
                 return len(obj_list)
             print(obj_list)
             return
-        for key, obj_dict in storage.all().items():
-            class_name = obj_dict["__class__"]
-            obj_class = HBNBCommand._classes[class_name]
-            obj_list.append(str(obj_class(**obj_dict)))
+        for key, obj in storage.all().items():
+            obj_list.append(str(obj))
         print(obj_list)
 
     def do_update(self, arg: str) -> None:
@@ -133,8 +128,7 @@ class HBNBCommand(cmd.Cmd):
             return
         class_name, id = args[0], args[1].replace(",", "")
         key = f"{class_name}.{id}"
-        all_obj = storage.all()
-        if key not in all_obj:
+        if key not in storage.all():
             print("** no instance found **")
             return
         if len(args) < 3:
@@ -144,9 +138,7 @@ class HBNBCommand(cmd.Cmd):
             print("** value missing **")
             return
         attr, value = args[2].strip(","), args[3].strip(",")
-        obj_dict = all_obj[key]
-        obj_class = HBNBCommand._classes[class_name]
-        obj = obj_class(**obj_dict)
+        obj = storage.all()[key]
         if attr in dir(obj):
             attr_type = type(getattr(obj, attr))
             obj.__dict__[attr] = attr_type(value)
@@ -166,7 +158,7 @@ class HBNBCommand(cmd.Cmd):
         obj_dict = obj_dict.strip("{}").split(",")
         for attr_str in obj_dict:
             attr = attr_str.split(":")
-            name = attr[0].strip()
+            name = attr[0].strip(' "')
             value = ""
             if len(attr) > 1:
                 value = attr[1].strip()

@@ -19,20 +19,48 @@ class FileStorage:
     def new(self, obj) -> None:
         """sets a new obj in __objects"""
         FileStorage.__objects[
-            f"{obj.__class__.__name__}.{obj.id}"] = obj.to_dict()
+            f"{obj.__class__.__name__}.{obj.id}"] = obj
 
     def save(self):
         """serializes __objects to a JSON file in __file_path"""
-        json_str = json.dumps(FileStorage.__objects, indent=2)
+        dict_to_save = {}
+        for key, obj in FileStorage.__objects.items():
+            dict_to_save[key] = obj.to_dict()
+        json_str = json.dumps(dict_to_save, indent=2)
         with open(f"{FileStorage.__file_path}", "w") as f:
             f.write(json_str)
 
     def reload(self):
         """deserializes a json file at __file_path and save
         it in __objects"""
+        models = import_models()
         if os_path.exists(FileStorage.__file_path):
             with open(f"{FileStorage.__file_path}", "r") as f:
                 json_str = f.read()
                 if len(json_str) == 0:
                     return
-                FileStorage.__objects = json.loads(json_str)
+                loaded_dict = json.loads(json_str)
+                FileStorage.__objects.clear()
+                for key, obj_dict in loaded_dict.items():
+                    obj_class = models[key.split(".")[0]]
+                    FileStorage.__objects[key] = obj_class(**obj_dict)
+
+
+def import_models():
+    from models.base_model import BaseModel
+    from models.user import User
+    from models.place import Place
+    from models.state import State
+    from models.city import City
+    from models.amenity import Amenity
+    from models.review import Review
+    models = {
+        "BaseModel": BaseModel,
+        "User": User,
+        "State": State,
+        "City": City,
+        "Place": Place,
+        "Amenity": Amenity,
+        "Review": Review
+    }
+    return models

@@ -264,7 +264,7 @@ class TestShowCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"show BaseModel {id}")
         key = f"BaseModel.{id}"
-        obj = BaseModel(**storage.all()[key])
+        obj = storage.all()[key]
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
     def test_show_with_User(self):
@@ -274,7 +274,7 @@ class TestShowCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"show User {id}")
         key = f"User.{id}"
-        obj = User(**storage.all()[key])
+        obj = storage.all()[key]
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
     def test_show_with_State(self):
@@ -284,7 +284,7 @@ class TestShowCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"show State {id}")
         key = f"State.{id}"
-        obj = State(**storage.all()[key])
+        obj = storage.all()[key]
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
     def test_show_with_Place(self):
@@ -294,7 +294,7 @@ class TestShowCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"show Place {id}")
         key = f"Place.{id}"
-        obj = Place(**storage.all()[key])
+        obj = storage.all()[key]
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
     def test_show_with_Amenity(self):
@@ -304,7 +304,7 @@ class TestShowCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"show Amenity {id}")
         key = f"Amenity.{id}"
-        obj = Amenity(**storage.all()[key])
+        obj = storage.all()[key]
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
     def test_show_with_Review(self):
@@ -314,7 +314,7 @@ class TestShowCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"show Review {id}")
         key = f"Review.{id}"
-        obj = Review(**storage.all()[key])
+        obj = storage.all()[key]
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
     def test_show_without_id_alternate(self):
@@ -336,7 +336,7 @@ class TestShowCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"BaseModel.show({id})")
         key = f"BaseModel.{id}"
-        obj = BaseModel(**storage.all()[key])
+        obj = storage.all()[key]
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
     def test_show_with_User_alternate(self):
@@ -346,7 +346,7 @@ class TestShowCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"User.show({id})")
         key = f"User.{id}"
-        obj = User(**storage.all()[key])
+        obj = storage.all()[key]
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
     def test_show_with_State_alternate(self):
@@ -356,7 +356,7 @@ class TestShowCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"State.show({id})")
         key = f"State.{id}"
-        obj = State(**storage.all()[key])
+        obj = storage.all()[key]
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
     def test_show_with_Place_alternate(self):
@@ -366,7 +366,7 @@ class TestShowCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"Place.show({id})")
         key = f"Place.{id}"
-        obj = Place(**storage.all()[key])
+        obj = storage.all()[key]
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
     def test_show_with_Amenity_alternate(self):
@@ -376,7 +376,7 @@ class TestShowCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"Amenity.show({id})")
         key = f"Amenity.{id}"
-        obj = Amenity(**storage.all()[key])
+        obj = storage.all()[key]
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
     def test_show_with_Review_alternate(self):
@@ -386,7 +386,7 @@ class TestShowCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(f"Review.show({id})")
         key = f"Review.{id}"
-        obj = Review(**storage.all()[key])
+        obj = storage.all()[key]
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
 
@@ -570,15 +570,6 @@ class TestAllCommand(unittest.TestCase):
     """Tests the all command"""
 
     def setUp(self):
-        self.classes = {
-            "BaseModel": BaseModel,
-            "User": User,
-            "State": State,
-            "City": City,
-            "Place": Place,
-            "Amenity": Amenity,
-            "Review": Review,
-        }
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create BaseModel")
             HBNBCommand().onecmd("create User")
@@ -587,28 +578,12 @@ class TestAllCommand(unittest.TestCase):
             HBNBCommand().onecmd("create Place")
             HBNBCommand().onecmd("create Amenity")
             HBNBCommand().onecmd("create Review")
-        try:
-            os.rename("file.json", "tmp")
-        except IOError:
-            pass
-
-    def tearDown(self):
-        try:
-            os.remove("file.json")
-        except IOError:
-            pass
-        try:
-            os.rename("tmp", "file.json")
-        except IOError:
-            pass
 
     def test_all_without_classname(self):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("all")
         expected = []
-        for key, value in storage.all().items():
-            obj_class = self.classes[key.split(".")[0]]
-            obj = obj_class(**value)
+        for key, obj in storage.all().items():
             expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -616,9 +591,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("all BaseModel")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "BaseModel" in key:
-                obj = BaseModel(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -626,9 +600,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("all User")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "User" in key:
-                obj = User(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -636,9 +609,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("all Place")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "Place" in key:
-                obj = Place(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -646,9 +618,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("all State")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "State" in key:
-                obj = State(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -656,9 +627,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("all City")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "City" in key:
-                obj = City(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -666,9 +636,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("all Amenity")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "Amenity" in key:
-                obj = Amenity(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -676,9 +645,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("all Review")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "Review" in key:
-                obj = Review(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -686,9 +654,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("BaseModel.all()")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "BaseModel" in key:
-                obj = BaseModel(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -696,9 +663,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("User.all()")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "User" in key:
-                obj = User(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -706,9 +672,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("Place.all()")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "Place" in key:
-                obj = Place(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -716,9 +681,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("State.all()")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "State" in key:
-                obj = State(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -726,9 +690,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("City.all()")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "City" in key:
-                obj = City(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -736,9 +699,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("Amenity.all()")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "Amenity" in key:
-                obj = Amenity(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -746,9 +708,8 @@ class TestAllCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("Review.all()")
         expected = []
-        for key, value in storage.all().items():
+        for key, obj in storage.all().items():
             if "Review" in key:
-                obj = Review(**value)
                 expected.append(str(obj))
         self.assertEqual(f.getvalue()[:-1], str(expected))
 
@@ -816,9 +777,6 @@ class TestUpdateCommand(unittest.TestCase):
         id = self.base.id
         HBNBCommand().onecmd(f'update BaseModel {id} name "Alx"')
         key = f"BaseModel.{id}"
-        with self.assertRaises(AttributeError):
-            name = self.base.name
-        self.base = BaseModel(**storage.all()[key])
         self.assertEqual(self.base.name, "Alx")
 
     def test_update_User(self):
@@ -826,7 +784,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.user.email, "we@alx.com")
         HBNBCommand().onecmd(f'update User {id} email "we@alx.com"')
         key = f"User.{id}"
-        self.user = User(**storage.all()[key])
         self.assertEqual(self.user.email, 'we@alx.com')
 
     def test_update_Place(self):
@@ -834,7 +791,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.place.latitude, 45.5)
         HBNBCommand().onecmd(f'update Place {id} latitude 45.5')
         key = f"Place.{id}"
-        self.place = Place(**storage.all()[key])
         self.assertEqual(self.place.latitude, 45.5)
 
     def test_update_State(self):
@@ -842,7 +798,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.state.name, "Ibadan")
         HBNBCommand().onecmd(f'update State {id} name "Ibadan"')
         key = f"State.{id}"
-        self.state = State(**storage.all()[key])
         self.assertEqual(self.state.name, "Ibadan")
 
     def test_update_City(self):
@@ -850,7 +805,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.city.state_id, self.state.id)
         HBNBCommand().onecmd(f'update City {id} state_id {self.state.id}')
         key = f"City.{id}"
-        self.city = City(**storage.all()[key])
         self.assertEqual(self.city.state_id, self.state.id)
 
     def test_update_Amenity(self):
@@ -858,7 +812,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.amenity.name, "Internet")
         HBNBCommand().onecmd(f'update Amenity {id} name Internet')
         key = f"Amenity.{id}"
-        self.amenity = Amenity(**storage.all()[key])
         self.assertEqual(self.amenity.name, "Internet")
 
     def test_update_Review(self):
@@ -866,7 +819,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.review.user_id, self.user.id)
         HBNBCommand().onecmd(f'update Review {id} user_id {self.user.id}')
         key = f"Review.{id}"
-        self.review = Review(**storage.all()[key])
         self.assertEqual(self.review.user_id, self.user.id)
 
     def test_update_without_id_alternate(self):
@@ -899,9 +851,6 @@ class TestUpdateCommand(unittest.TestCase):
         id = self.base.id
         HBNBCommand().onecmd(f'BaseModel.update({id}, name, "Alx")')
         key = f"BaseModel.{id}"
-        with self.assertRaises(AttributeError):
-            name = self.base.name
-        self.base = BaseModel(**storage.all()[key])
         self.assertEqual(self.base.name, "Alx")
 
     def test_update_User_alternate(self):
@@ -909,7 +858,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.user.email, "we@alx.com")
         HBNBCommand().onecmd(f'User.update({id}, email, "we@alx.com")')
         key = f"User.{id}"
-        self.user = User(**storage.all()[key])
         self.assertEqual(self.user.email, 'we@alx.com')
 
     def test_update_Place_alternate(self):
@@ -917,7 +865,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.place.latitude, 45.5)
         HBNBCommand().onecmd(f'Place.update({id}, latitude, 45.5)')
         key = f"Place.{id}"
-        self.place = Place(**storage.all()[key])
         self.assertEqual(self.place.latitude, 45.5)
 
     def test_update_State_alternate(self):
@@ -925,7 +872,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.state.name, "Ibadan")
         HBNBCommand().onecmd(f'State.update({id}, name, "Ibadan")')
         key = f"State.{id}"
-        self.state = State(**storage.all()[key])
         self.assertEqual(self.state.name, "Ibadan")
 
     def test_update_City_alternate(self):
@@ -933,7 +879,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.city.state_id, self.state.id)
         HBNBCommand().onecmd(f'City.update({id}, state_id, {self.state.id})')
         key = f"City.{id}"
-        self.city = City(**storage.all()[key])
         self.assertEqual(self.city.state_id, self.state.id)
 
     def test_update_Amenity_alternate(self):
@@ -941,7 +886,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.amenity.name, "Internet")
         HBNBCommand().onecmd(f'Amenity.update({id}, name, Internet)')
         key = f"Amenity.{id}"
-        self.amenity = Amenity(**storage.all()[key])
         self.assertEqual(self.amenity.name, "Internet")
 
     def test_update_Review_alternate(self):
@@ -949,16 +893,12 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.review.user_id, self.user.id)
         HBNBCommand().onecmd(f'Review.update({id}, user_id, {self.user.id})')
         key = f"Review.{id}"
-        self.review = Review(**storage.all()[key])
         self.assertEqual(self.review.user_id, self.user.id)
 
     def test_update_BaseModel_with_dict(self):
         id = self.base.id
         HBNBCommand().onecmd(f'BaseModel.update({id}, {{"name": "Alx"}})')
         key = f"BaseModel.{id}"
-        with self.assertRaises(AttributeError):
-            name = self.base.name
-        self.base = BaseModel(**storage.all()[key])
         self.assertEqual(self.base.name, "Alx")
 
     def test_update_User_with_dict(self):
@@ -966,7 +906,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.user.email, "we@alx.com")
         HBNBCommand().onecmd(f'User.update({id}, {{"email": "we@alx.com"}})')
         key = f"User.{id}"
-        self.user = User(**storage.all()[key])
         self.assertEqual(self.user.email, 'we@alx.com')
 
     def test_update_State_with_dict(self):
@@ -974,7 +913,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.state.name, "Ibadan")
         HBNBCommand().onecmd(f'State.update({id}, {{"name": "Ibadan"}})')
         key = f"State.{id}"
-        self.state = State(**storage.all()[key])
         self.assertEqual(self.state.name, "Ibadan")
 
     def test_update_City_with_dict(self):
@@ -983,7 +921,6 @@ class TestUpdateCommand(unittest.TestCase):
         HBNBCommand().onecmd(
                     f'City.update({id}, {{"state_id": "{self.state.id}}})')
         key = f"City.{id}"
-        self.city = City(**storage.all()[key])
         self.assertEqual(self.city.state_id, self.state.id)
 
     def test_update_Amenity_with_dict(self):
@@ -991,7 +928,6 @@ class TestUpdateCommand(unittest.TestCase):
         self.assertNotEqual(self.amenity.name, "Internet")
         HBNBCommand().onecmd(f'Amenity.update({id}, {{"name": "Internet"}})')
         key = f"Amenity.{id}"
-        self.amenity = Amenity(**storage.all()[key])
         self.assertEqual(self.amenity.name, "Internet")
 
     def test_update_Review_with_dict(self):
@@ -1000,7 +936,6 @@ class TestUpdateCommand(unittest.TestCase):
         HBNBCommand().onecmd(
                 f'Review.update({id}, {{"user_id": "{self.user.id}"}})')
         key = f"Review.{id}"
-        self.review = Review(**storage.all()[key])
         self.assertEqual(self.review.user_id, self.user.id)
 
     def test_update_Place_with_dict(self):
@@ -1020,7 +955,6 @@ class TestUpdateCommand(unittest.TestCase):
                              }})'
                             )
         key = f"Place.{id}"
-        self.place = Place(**storage.all()[key])
         self.assertEqual(self.place.latitude, 45.5)
         self.assertEqual(self.place.longitude, 100.0)
         self.assertEqual(self.place.city_id, self.city.id)
@@ -1039,28 +973,13 @@ class TestCountCommand(unittest.TestCase):
         self.amenity = Amenity()
         self.review = Review()
 
-        try:
-            os.rename("file.json", "tmp")
-        except IOError:
-            pass
-
-    def tearDown(self):
-        try:
-            os.remove("file.json")
-        except IOError:
-            pass
-        try:
-            os.rename("tmp", "file.json")
-        except IOError:
-            pass
-
     def test_count_BaseModel(self):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("BaseModel.count()")
         count = int(f.getvalue()[:-1])
         expected = 0
-        for key in storage.all().keys():
-            if "BaseModel" in key:
+        for obj in storage.all().values():
+            if type(obj) is BaseModel:
                 expected += 1
         self.assertEqual(count, expected)
 
@@ -1069,8 +988,8 @@ class TestCountCommand(unittest.TestCase):
             HBNBCommand().onecmd("User.count()")
         count = int(f.getvalue()[:-1])
         expected = 0
-        for key in storage.all().keys():
-            if "User" in key:
+        for obj in storage.all().values():
+            if type(obj) is User:
                 expected += 1
         self.assertEqual(count, expected)
 
@@ -1079,8 +998,8 @@ class TestCountCommand(unittest.TestCase):
             HBNBCommand().onecmd("Place.count()")
         count = int(f.getvalue()[:-1])
         expected = 0
-        for key in storage.all().keys():
-            if "Place" in key:
+        for obj in storage.all().values():
+            if type(obj) is Place:
                 expected += 1
         self.assertEqual(count, expected)
 
@@ -1089,8 +1008,8 @@ class TestCountCommand(unittest.TestCase):
             HBNBCommand().onecmd("State.count()")
         count = int(f.getvalue()[:-1])
         expected = 0
-        for key in storage.all().keys():
-            if "State" in key:
+        for obj in storage.all().values():
+            if type(obj) is State:
                 expected += 1
         self.assertEqual(count, expected)
 
@@ -1099,8 +1018,8 @@ class TestCountCommand(unittest.TestCase):
             HBNBCommand().onecmd("City.count()")
         count = int(f.getvalue()[:-1])
         expected = 0
-        for key in storage.all().keys():
-            if "City" in key:
+        for obj in storage.all().values():
+            if type(obj) is City:
                 expected += 1
         self.assertEqual(count, expected)
 
@@ -1109,8 +1028,8 @@ class TestCountCommand(unittest.TestCase):
             HBNBCommand().onecmd("Amenity.count()")
         count = int(f.getvalue()[:-1])
         expected = 0
-        for key in storage.all().keys():
-            if "Amenity" in key:
+        for obj in storage.all().values():
+            if type(obj) is Amenity:
                 expected += 1
         self.assertEqual(count, expected)
 
@@ -1119,8 +1038,8 @@ class TestCountCommand(unittest.TestCase):
             HBNBCommand().onecmd("Review.count()")
         count = int(f.getvalue()[:-1])
         expected = 0
-        for key in storage.all().keys():
-            if "Review" in key:
+        for obj in storage.all().values():
+            if type(obj) is Review:
                 expected += 1
         self.assertEqual(count, expected)
 

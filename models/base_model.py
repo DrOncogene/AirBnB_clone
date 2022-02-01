@@ -16,8 +16,6 @@ class BaseModel:
                 self.created_at = datetime.fromisoformat(v)
             elif k == "updated_at":
                 self.updated_at = datetime.fromisoformat(v)
-            elif k == "id":
-                self.id = v
             elif k != "__class__":
                 self.__dict__[k] = v
         if len(kwargs) == 0:
