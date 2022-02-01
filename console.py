@@ -41,7 +41,7 @@ class HBNBCommand(cmd.Cmd):
         return
 
     def default(self, arg: str) -> None:
-        pattern = re.compile(r'(\w+)\.(\w+)\(([A-Za-z0-9\-,{}:\'\" ]*)\)')
+        pattern = re.compile(r'(\w+)\.(\w+)\(([\S ]*)\)')
         res = pattern.findall(arg)
         if len(res) < 1 or len(res[0]) < 3:
             super().default(arg)
