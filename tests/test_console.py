@@ -3,7 +3,6 @@
 import unittest
 import os
 from io import StringIO
-from datetime import datetime
 from unittest.mock import patch
 from sys import path as sys_path
 script_dir = os.path.dirname(__file__)
@@ -165,6 +164,55 @@ class TestCreateCommand(unittest.TestCase):
         key = f"Review.{id}"
         self.assertIn(key, storage.all().keys())
 
+    def test_create_with_BaseModel_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.create()")
+        id = f.getvalue()[:-1]
+        key = f"BaseModel.{id}"
+        self.assertIn(key, storage.all().keys())
+
+    def test_create_with_User_model_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("User.create()")
+        id = f.getvalue()[:-1]
+        key = f"User.{id}"
+        self.assertIn(key, storage.all().keys())
+
+    def test_create_with_City_model_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("City.create()")
+        id = f.getvalue()[:-1]
+        key = f"City.{id}"
+        self.assertIn(key, storage.all().keys())
+
+    def test_create_with_Place_model_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Place.create()")
+        id = f.getvalue()[:-1]
+        key = f"Place.{id}"
+        self.assertIn(key, storage.all().keys())
+
+    def test_create_with_State_model_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("State.create()")
+        id = f.getvalue()[:-1]
+        key = f"State.{id}"
+        self.assertIn(key, storage.all().keys())
+
+    def test_create_with_Amenity_model_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Amenity.create()")
+        id = f.getvalue()[:-1]
+        key = f"Amenity.{id}"
+        self.assertIn(key, storage.all().keys())
+
+    def test_create_with_Review_model_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Review.create()")
+        id = f.getvalue()[:-1]
+        key = f"Review.{id}"
+        self.assertIn(key, storage.all().keys())
+
 
 class TestShowCommand(unittest.TestCase):
     ''' test the show command '''
@@ -263,6 +311,78 @@ class TestShowCommand(unittest.TestCase):
         obj = Review(**storage.all()[key])
         self.assertEqual(f.getvalue()[:-1], str(obj))
 
+    def test_show_without_id_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.show()")
+        expected = "** instance id missing **\n"
+        self.assertEqual(f.getvalue(), expected)
+
+    def test_show_with_invalid_id_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.show(7585966)")
+        expected = "** no instance found **\n"
+        self.assertEqual(f.getvalue(), expected)
+
+    def test_show_with_BaseModel_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.create()")
+            id = f.getvalue()[:-1]
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd(f"BaseModel.show({id})")
+        key = f"BaseModel.{id}"
+        obj = BaseModel(**storage.all()[key])
+        self.assertEqual(f.getvalue()[:-1], str(obj))
+
+    def test_show_with_User_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("User.create()")
+            id = f.getvalue()[:-1]
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd(f"User.show({id})")
+        key = f"User.{id}"
+        obj = User(**storage.all()[key])
+        self.assertEqual(f.getvalue()[:-1], str(obj))
+
+    def test_show_with_State_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("State.create()")
+            id = f.getvalue()[:-1]
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd(f"State.show({id})")
+        key = f"State.{id}"
+        obj = State(**storage.all()[key])
+        self.assertEqual(f.getvalue()[:-1], str(obj))
+
+    def test_show_with_Place_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Place.create()")
+            id = f.getvalue()[:-1]
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd(f"Place.show({id})")
+        key = f"Place.{id}"
+        obj = Place(**storage.all()[key])
+        self.assertEqual(f.getvalue()[:-1], str(obj))
+
+    def test_show_with_Amenity_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Amenity.create()")
+            id = f.getvalue()[:-1]
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd(f"Amenity.show({id})")
+        key = f"Amenity.{id}"
+        obj = Amenity(**storage.all()[key])
+        self.assertEqual(f.getvalue()[:-1], str(obj))
+
+    def test_show_with_Review_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Review.create()")
+            id = f.getvalue()[:-1]
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd(f"Review.show({id})")
+        key = f"Review.{id}"
+        obj = Review(**storage.all()[key])
+        self.assertEqual(f.getvalue()[:-1], str(obj))
+
 
 class TestDestroyCommand(unittest.TestCase):
     '''test the destroy command'''
@@ -337,7 +457,7 @@ class TestDestroyCommand(unittest.TestCase):
         HBNBCommand().onecmd(f"destroy State {id}")
         self.assertNotIn(key, storage.all().keys())
 
-    def test_show_with_City(self):
+    def test_destroy_with_City(self):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create City")
             id = f.getvalue()[:-1]
@@ -362,6 +482,81 @@ class TestDestroyCommand(unittest.TestCase):
         key = f"Review.{id}"
         self.assertIn(key, storage.all().keys())
         HBNBCommand().onecmd(f"destroy Review {id}")
+        self.assertNotIn(key, storage.all().keys())
+
+    def test_destroy_without_id_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.destroy()")
+        expected = "** instance id missing **\n"
+        self.assertEqual(f.getvalue(), expected)
+
+    def test_destroy_with_invalid_id_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.destroy(model)")
+        expected = "** no instance found **\n"
+        self.assertEqual(f.getvalue(), expected)
+
+    def test_destroy_with_BaseModel_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.create()")
+            id = f.getvalue()[:-1]
+        key = f"BaseModel.{id}"
+        self.assertIn(key, storage.all().keys())
+        HBNBCommand().onecmd(f"BaseModel.destroy({id})")
+        self.assertNotIn(key, storage.all().keys())
+
+    def test_destroy_with_User_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("User.create()")
+            id = f.getvalue()[:-1]
+        key = f"User.{id}"
+        self.assertIn(key, storage.all().keys())
+        HBNBCommand().onecmd(f"User.destroy({id})")
+        self.assertNotIn(key, storage.all().keys())
+
+    def test_destroy_with_Place_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Place.create()")
+            id = f.getvalue()[:-1]
+        key = f"Place.{id}"
+        self.assertIn(key, storage.all().keys())
+        HBNBCommand().onecmd(f"Place.destroy({id})")
+        self.assertNotIn(key, storage.all().keys())
+
+    def test_destroy_with_State_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("State.create()")
+            id = f.getvalue()[:-1]
+        key = f"State.{id}"
+        self.assertIn(key, storage.all().keys())
+        HBNBCommand().onecmd(f"State.destroy({id})")
+        self.assertNotIn(key, storage.all().keys())
+
+    def test_destroy_with_City_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("City.create()")
+            id = f.getvalue()[:-1]
+        key = f"City.{id}"
+        self.assertIn(key, storage.all().keys())
+        HBNBCommand().onecmd(f"City.destroy({id})")
+        self.assertNotIn(key, storage.all().keys())
+
+    def test_destroy_with_Amenity_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Amenity.create()")
+            id = f.getvalue()[:-1]
+        key = f"Amenity.{id}"
+        self.assertIn(key, storage.all().keys())
+        HBNBCommand().onecmd(f"Amenity.destroy({id})")
+        self.assertNotIn(key, storage.all().keys())
+
+    def test_destroy_with_Review_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Review.create()")
+            id = f.getvalue()[:-1]
+        key = f"Review.{id}"
+        self.assertIn(key, storage.all().keys())
+        HBNBCommand().onecmd(f"Review.destroy({id})")
         self.assertNotIn(key, storage.all().keys())
 
 
@@ -474,6 +669,76 @@ class TestAllCommand(unittest.TestCase):
     def test_all_with_Review(self):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("all Review")
+        expected = []
+        for key, value in storage.all().items():
+            if "Review" in key:
+                obj = Review(**value)
+                expected.append(str(obj))
+        self.assertEqual(f.getvalue()[:-1], str(expected))
+
+    def test_all_with_BaseModel_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.all()")
+        expected = []
+        for key, value in storage.all().items():
+            if "BaseModel" in key:
+                obj = BaseModel(**value)
+                expected.append(str(obj))
+        self.assertEqual(f.getvalue()[:-1], str(expected))
+
+    def test_all_with_User_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("User.all()")
+        expected = []
+        for key, value in storage.all().items():
+            if "User" in key:
+                obj = User(**value)
+                expected.append(str(obj))
+        self.assertEqual(f.getvalue()[:-1], str(expected))
+
+    def test_all_with_Place_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Place.all()")
+        expected = []
+        for key, value in storage.all().items():
+            if "Place" in key:
+                obj = Place(**value)
+                expected.append(str(obj))
+        self.assertEqual(f.getvalue()[:-1], str(expected))
+
+    def test_all_with_State_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("State.all()")
+        expected = []
+        for key, value in storage.all().items():
+            if "State" in key:
+                obj = State(**value)
+                expected.append(str(obj))
+        self.assertEqual(f.getvalue()[:-1], str(expected))
+
+    def test_all_with_City_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("City.all()")
+        expected = []
+        for key, value in storage.all().items():
+            if "City" in key:
+                obj = City(**value)
+                expected.append(str(obj))
+        self.assertEqual(f.getvalue()[:-1], str(expected))
+
+    def test_all_with_Amenity_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Amenity.all()")
+        expected = []
+        for key, value in storage.all().items():
+            if "Amenity" in key:
+                obj = Amenity(**value)
+                expected.append(str(obj))
+        self.assertEqual(f.getvalue()[:-1], str(expected))
+
+    def test_all_with_Review_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("Review.all()")
         expected = []
         for key, value in storage.all().items():
             if "Review" in key:
@@ -606,6 +871,109 @@ class TestUpdateCommand(unittest.TestCase):
         key = f"Review.{id}"
         self.review = Review(**storage.all()[key])
         self.assertEqual(self.review.user_id, self.user.id)
+
+    def test_update_without_id_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.update()")
+        expected = "** instance id missing **\n"
+        self.assertEqual(f.getvalue(), expected)
+
+    def test_update_with_invalid_id_alternate(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("BaseModel.update(an_id)")
+        expected = "** no instance found **\n"
+        self.assertEqual(f.getvalue(), expected)
+
+    def test_update_without_attr_name_alternate(self):
+        id = self.base.id
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd(f"BaseModel.update({id})")
+        expected = "** attribute name missing **\n"
+        self.assertEqual(f.getvalue(), expected)
+
+    def test_update_without_attr_value_alternate(self):
+        id = self.user.id
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd(f"User.update({id}, name)")
+        expected = "** value missing **\n"
+        self.assertEqual(f.getvalue(), expected)
+
+    def test_update_BaseModel_alternate(self):
+        id = self.base.id
+        HBNBCommand().onecmd(f'BaseModel.update({id}, name, "Alx")')
+        key = f"BaseModel.{id}"
+        with self.assertRaises(AttributeError):
+            name = self.base.name
+        self.base = BaseModel(**storage.all()[key])
+        self.assertEqual(self.base.name, "Alx")
+
+    def test_update_User_alternate(self):
+        id = self.user.id
+        self.assertNotEqual(self.user.email, "we@alx.com")
+        HBNBCommand().onecmd(f'User.update({id}, email, "we@alx.com")')
+        key = f"User.{id}"
+        self.user = User(**storage.all()[key])
+        self.assertEqual(self.user.email, 'we@alx.com')
+
+    def test_update_Place_alternate(self):
+        id = self.place.id
+        self.assertNotEqual(self.place.latitude, 45.5)
+        HBNBCommand().onecmd(f'Place.update({id}, latitude, 45.5)')
+        key = f"Place.{id}"
+        self.place = Place(**storage.all()[key])
+        self.assertEqual(self.place.latitude, 45.5)
+
+    def test_update_State_alternate(self):
+        id = self.state.id
+        self.assertNotEqual(self.state.name, "Ibadan")
+        HBNBCommand().onecmd(f'State.update({id}, name, "Ibadan")')
+        key = f"State.{id}"
+        self.state = State(**storage.all()[key])
+        self.assertEqual(self.state.name, "Ibadan")
+
+    def test_update_City_alternate(self):
+        id = self.city.id
+        self.assertNotEqual(self.city.state_id, self.state.id)
+        HBNBCommand().onecmd(f'City.update({id}, state_id, {self.state.id})')
+        key = f"City.{id}"
+        self.city = City(**storage.all()[key])
+        self.assertEqual(self.city.state_id, self.state.id)
+
+    def test_update_Amenity_alternate(self):
+        id = self.amenity.id
+        self.assertNotEqual(self.amenity.name, "Internet")
+        HBNBCommand().onecmd(f'Amenity.update({id}, name, Internet)')
+        key = f"Amenity.{id}"
+        self.amenity = Amenity(**storage.all()[key])
+        self.assertEqual(self.amenity.name, "Internet")
+
+    def test_update_Review_alternate(self):
+        id = self.review.id
+        self.assertNotEqual(self.review.user_id, self.user.id)
+        HBNBCommand().onecmd(f'Review.update({id}, user_id, {self.user.id})')
+        key = f"Review.{id}"
+        self.review = Review(**storage.all()[key])
+        self.assertEqual(self.review.user_id, self.user.id)
+
+    def test_update_with_dictionary(self):
+        id = self.place.id
+        self.assertNotEqual(self.place.city_id, self.city.id)
+        self.assertNotEqual(self.place.user_id, self.user.id)
+        self.assertNotEqual(self.place.longitude, 100.0)
+        self.assertNotEqual(self.place.latitude, 45.5)
+        city = self.city.id
+        user = self.user.id
+        HBNBCommand().onecmd(
+                            f'Place.update({id}, {{\
+                             city_id:{city},\
+                             user_id:{user},\
+                             longitude: 100.0,\
+                             latitude:45.5\
+                             }})'
+                            )
+        key = f"Place.{id}"
+        self.place = Place(**storage.all()[key])
+        self.assertEqual(self.place.latitude, 45.5)
 
 
 if __name__ == "__main__":
