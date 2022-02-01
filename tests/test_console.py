@@ -20,6 +20,12 @@ from console import HBNBCommand  # noqa: E402
 
 class TestHelp(unittest.TestCase):
     """ tests the help command"""
+
+    def test_help(self):
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("help")
+        self.assertIn("Documented commands", f.getvalue())
+
     def test_help_create(self):
         """ test correct help output for create command"""
         with patch('sys.stdout', new=StringIO()) as f:
@@ -946,7 +952,58 @@ class TestUpdateCommand(unittest.TestCase):
         self.review = Review(**storage.all()[key])
         self.assertEqual(self.review.user_id, self.user.id)
 
-    def test_update_with_dictionary(self):
+    def test_update_BaseModel_with_dict(self):
+        id = self.base.id
+        HBNBCommand().onecmd(f'BaseModel.update({id}, {{"name": "Alx"}})')
+        key = f"BaseModel.{id}"
+        with self.assertRaises(AttributeError):
+            name = self.base.name
+        self.base = BaseModel(**storage.all()[key])
+        self.assertEqual(self.base.name, "Alx")
+
+    def test_update_User_with_dict(self):
+        id = self.user.id
+        self.assertNotEqual(self.user.email, "we@alx.com")
+        HBNBCommand().onecmd(f'User.update({id}, {{"email": "we@alx.com"}})')
+        key = f"User.{id}"
+        self.user = User(**storage.all()[key])
+        self.assertEqual(self.user.email, 'we@alx.com')
+
+    def test_update_State_with_dict(self):
+        id = self.state.id
+        self.assertNotEqual(self.state.name, "Ibadan")
+        HBNBCommand().onecmd(f'State.update({id}, {{"name": "Ibadan"}})')
+        key = f"State.{id}"
+        self.state = State(**storage.all()[key])
+        self.assertEqual(self.state.name, "Ibadan")
+
+    def test_update_City_with_dict(self):
+        id = self.city.id
+        self.assertNotEqual(self.city.state_id, self.state.id)
+        HBNBCommand().onecmd(
+                    f'City.update({id}, {{"state_id": "{self.state.id}}})')
+        key = f"City.{id}"
+        self.city = City(**storage.all()[key])
+        self.assertEqual(self.city.state_id, self.state.id)
+
+    def test_update_Amenity_with_dict(self):
+        id = self.amenity.id
+        self.assertNotEqual(self.amenity.name, "Internet")
+        HBNBCommand().onecmd(f'Amenity.update({id}, {{"name": "Internet"}})')
+        key = f"Amenity.{id}"
+        self.amenity = Amenity(**storage.all()[key])
+        self.assertEqual(self.amenity.name, "Internet")
+
+    def test_update_Review_with_dict(self):
+        id = self.review.id
+        self.assertNotEqual(self.review.user_id, self.user.id)
+        HBNBCommand().onecmd(
+                f'Review.update({id}, {{"user_id": "{self.user.id}"}})')
+        key = f"Review.{id}"
+        self.review = Review(**storage.all()[key])
+        self.assertEqual(self.review.user_id, self.user.id)
+
+    def test_update_Place_with_dict(self):
         id = self.place.id
         self.assertNotEqual(self.place.city_id, self.city.id)
         self.assertNotEqual(self.place.user_id, self.user.id)
@@ -965,6 +1022,9 @@ class TestUpdateCommand(unittest.TestCase):
         key = f"Place.{id}"
         self.place = Place(**storage.all()[key])
         self.assertEqual(self.place.latitude, 45.5)
+        self.assertEqual(self.place.longitude, 100.0)
+        self.assertEqual(self.place.city_id, self.city.id)
+        self.assertEqual(self.place.user_id, self.user.id)
 
 
 class TestCountCommand(unittest.TestCase):
