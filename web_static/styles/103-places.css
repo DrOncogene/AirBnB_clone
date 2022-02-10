@@ -1,15 +1,20 @@
 .places {
 	position: relative;
+	width: 100%;
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	z-index: -1;
+}
+.places h1 {
+	font-size: 1.875rem;
+	align-self: flex-start;
+	margin: 10px 20px 0;
 }
 .places div{
 	display: flex;
-	flex-wrap: wrap;
+	flex-flow: row wrap;
 	justify-content: center;
-}
-.places h1 {
-	font-size: 30px;
-	text-align: left;
-	margin: 10px 20px 0;
 }
 .places article {
 	width: 390px;
@@ -19,14 +24,20 @@
 	border-radius: 4px;
 	position: relative;
 	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
+	flex-flow: column;
 	align-items: center;
 }
+.places .place_header {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: space-around;
+	width: 100%;
+	padding-bottom: 1em;
+}
 .places article h2 {
-	font-size: 30px;
+	font-size: 1.875rem;
 	text-align: center;
-	margin-bottom: 1em;
 }
 .price_by_night {
 	color: #ff5a5f;
@@ -34,16 +45,11 @@
 	border-radius: 50%;
 	min-width: 60px;
 	height: 60px;
-	font-size: 30px;
-	padding: 10px 5px 15px;
-	text-align: center;
+	font-size: 1.875rem;
+	padding: 10px 5px;
 	letter-spacing: -1px;
-	position: absolute;
-	top: 15px;
-	right: 15px;
-	
 }
-.information {
+.places .information {
 	height: 80px;
 	border-top: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
@@ -88,10 +94,11 @@
 }
 .places .amenities h2,
 .places .reviews h2 {
-	font-size: 16px;
+	font-size: 1rem;
 	border-bottom: 1px solid #ddd;
 	width: 100%;
 	text-align: left;
+	margin-bottom: 1em;
 }
 .places .amenities ul,
 .places .reviews ul {
@@ -122,8 +129,49 @@
 	margin-bottom: 1em;
 }
 .places .reviews ul li h3 {
-	font-size: 14px;
+	font-size: 0.875rem;
 }
 .reviews ul li p {
-	font-size: 12px;
+	font-size: 0.75rem;
+}
+@media only screen and (max-width: 875.98px) {
+	.places article {
+		width: 350px;
+		margin: 15px;
+	}
+	.places .reviews {
+		display: none;
+	}
+}
+@media only screen and (max-width: 775.98px) {
+	.places article {
+		width: 250px;
+	}
+	.places .place_header {
+		flex-flow: column;
+	}
+	.places .price_by_night {
+		order: -1;
+		margin-bottom: 0.5em;
+	}
+	.places .information .icon,
+	.places .amenities {
+		display: none;
+	}
+	.places .information {
+		flex-flow: column;
+		justify-content: space-between;
+	}
+}
+@media only screen and (max-width: 575.98px) {
+	.places article {
+		width: 200px;
+		padding: 1em 0.5em;
+	}
+	.places .user {
+		align-self: center;
+	}
+	.places .description {
+		display: none;
+	}
 }

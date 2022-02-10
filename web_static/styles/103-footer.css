@@ -4,8 +4,7 @@ footer {
     background-color: #fff;
     text-align: center;
     border-top: 1px solid #ccc;
-}
-footer p {
-	height: 16px;
-	margin: 22px auto 22px;
+    padding: 20px 0 20px;
+    position: absolute;
+    bottom: 0;
 }

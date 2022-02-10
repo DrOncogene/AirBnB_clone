@@ -1,0 +1,25 @@
+html {
+	font-size: 16px;
+}
+*,
+*:before,
+*:after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+ul{
+	list-style: none;
+}
+body {
+	position: relative;
+	min-height: 100vh;
+    color: #484848;
+    font-size: 0.875rem;
+    font-family: Circular,"Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding-bottom: 60px;
+}
+.container {
+	max-width: 1000px;
+	margin: 30px auto;
+}
