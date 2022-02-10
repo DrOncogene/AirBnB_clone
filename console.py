@@ -144,8 +144,7 @@ class HBNBCommand(cmd.Cmd):
             obj.__dict__[attr] = attr_type(value)
         else:
             obj.__dict__[attr] = value
-        storage.new(obj)
-        storage.save()
+        obj.save()
 
     def dict_update(self, class_name: str, arg: str) -> None:
         pattern = re.compile(r'([\w\-]+),\s*(\{.*\})')
@@ -161,7 +160,7 @@ class HBNBCommand(cmd.Cmd):
             name = attr[0].strip(' "')
             value = ""
             if len(attr) > 1:
-                value = attr[1].strip()
+                value = attr[1].strip(' "')
             self.onecmd(f"update {class_name} {id} {name} {value}")
 
 
@@ -186,12 +185,14 @@ def parse_args(arg: str, delim=" ") -> list:
             for k in range(i + 1, j + 1):
                 full += f" {args[k]}"
             full = full.strip('"')
+            full = full.strip("'")
             args.insert(i, full)
             args_copy = args.copy()
             for k in range(i + 1, j + 2):
                 args.pop(args.index(args_copy[k]))
         else:
-            args[i] = curr.strip('"')
+            curr = curr.strip('"')
+            args[i] = curr.strip("'")
         i += 1
     return args
 
