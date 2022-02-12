@@ -1,6 +1,6 @@
 .filters {
 	position: relative;
-	background-color: #fff;
+	background-color: #FFF;
 	height: 70px;
 	width: 100%;
 	border: 1px solid #ddd;
@@ -91,7 +91,7 @@
 		padding-top: 10px;
 		overflow: hidden;
 	}
-	.filters button span {
+	.filters button i {
 		display: inline-block;
 		width: 40px;
 		height: 36px;

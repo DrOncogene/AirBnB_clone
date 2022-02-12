@@ -6,7 +6,7 @@
 	align-items: center;
 }
 .places h1 {
-	font-size: 1.875rem;
+	font-size: 30px;
 	align-self: flex-start;
 	margin: 10px 20px 0;
 }
@@ -19,12 +19,16 @@
 	width: 390px;
 	padding: 20px;
 	margin: 20px;
-	border: 1px solid #ff5a5f;
+	border: 1px solid #FF5A5F;
 	border-radius: 4px;
 	position: relative;
 	display: flex;
 	flex-flow: column;
 	align-items: center;
+}
+.places article h2 {
+	font-size: 1.875rem;
+	text-align: center;
 }
 .places .place_header {
 	display: flex;
@@ -33,10 +37,6 @@
 	justify-content: space-around;
 	width: 100%;
 	padding-bottom: 1em;
-}
-.places article h2 {
-	font-size: 1.875rem;
-	text-align: center;
 }
 .price_by_night {
 	color: #ff5a5f;
