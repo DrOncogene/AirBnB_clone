@@ -27,7 +27,7 @@
 	align-items: center;
 }
 .places article h2 {
-	font-size: 1.875rem;
+	font-size: 30px;
 	text-align: center;
 }
 .places .place_header {
@@ -38,17 +38,13 @@
 	width: 100%;
 	padding-bottom: 1em;
 }
-.places article h2 {
-	font-size: 1.875rem;
-	text-align: center;
-}
 .price_by_night {
 	color: #ff5a5f;
 	border: 4px #ff5a5f solid;
 	border-radius: 50%;
 	min-width: 60px;
 	height: 60px;
-	font-size: 1.875rem;
+	font-size: 30px;
 	padding: 10px 5px;
 	letter-spacing: -1px;
 }
