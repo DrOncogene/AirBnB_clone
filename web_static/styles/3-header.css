@@ -4,7 +4,7 @@ header {
   background-color: #FFF;
   border-bottom: 1px solid #CCC;
 }
-#header-logo{
+.header-logo{
 	display: inline-block;
 	background: url('../images/airbnb_logo.png') no-repeat;
 	width: 142px;
