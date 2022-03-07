@@ -88,3 +88,7 @@ class TestFileStorage(unittest.TestCase):
         self.assertNotIn(self.user_key, storage.all())
         storage.new(self.base)
         storage.new(self.user)
+
+
+if __name__ == "__main__":
+    unittest.main()
