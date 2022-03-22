@@ -26,9 +26,8 @@ class FileStorage:
         dict_to_save = {}
         for key, obj in FileStorage.__objects.items():
             dict_to_save[key] = obj.to_dict()
-        json_str = json.dumps(dict_to_save, indent=2)
         with open(f"{FileStorage.__file_path}", "w") as f:
-            f.write(json_str)
+            json.dump(dict_to_save, f, indent=2)
 
     def reload(self):
         """deserializes a json file at __file_path and save
